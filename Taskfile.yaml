@@ -1,0 +1,78 @@
+version: '3'
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task -l
+
+  run:
+    desc: Runs backend and frontend in dev mode
+    cmds:
+      - npx concurrently "task run-go" "task run-js"
+
+  run-go:
+    desc: Runs backend in dev mode
+    env:
+      JOT_DB_DIR: /tmp
+      JOT_PORT: 3000
+      JOT_PRODUCTION: false
+    cmds:
+      - go run main.go
+
+  run-js:
+    desc: Runs frontend in dev mode
+    env:
+      VITE_JOT_PRODUCTION: false
+    cmds:
+      - npm run dev
+
+  build:
+    desc: Builds all targets
+    deps:
+      - task: build-js
+
+  build-js:
+    desc: Builds client app
+    env:
+      VITE_JOT_PRODUCTION: true
+      NODE_ENV: production
+    cmds:
+      - npm run build
+
+  gen:
+    desc: Runs all codegen targets
+    deps:
+      - task: gen-sqlc
+      - task: gen-proto
+
+  gen-sqlc:
+    desc: Generates db code
+    cmds:
+      - rm -rf ./internal/generated/db
+      - sqlc generate
+
+  gen-proto:
+    desc: Generates proto code
+    cmds:
+      - rm -rf ./internal/generated/proto
+      - rm -rf ./client/generated/proto
+      - npx buf generate
+
+  format:
+    desc: Runs all format targets
+    deps:
+      - task: format-go
+      - task: format-prettier
+
+  format-go:
+    desc: Formats all go code
+    cmds:
+      - gofmt -w .
+
+  format-prettier:
+    desc: Formats code with prettier
+    cmds:
+      - npx prettier --log-level error --write .
+      # fixes prettier sql formatting breaking sqlc by adding a space
+      - fd -tfile -esql -x sed -r -i 's/(sqlc\.\w+) \(/\1(/g' {}
