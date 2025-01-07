@@ -3,6 +3,8 @@ import { createConnectTransport } from '@connectrpc/connect-web';
 import createCache from '@emotion/cache';
 import { MantineProvider, createTheme } from '@mantine/core';
 import '@mantine/core/styles.css';
+import { Notifications } from '@mantine/notifications';
+import '@mantine/notifications/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TssCacheProvider } from 'tss-react';
 
@@ -25,6 +27,7 @@ export function App() {
         <TssCacheProvider value={cache}>
           <MantineProvider theme={theme}>
             <Home />
+            <Notifications />
           </MantineProvider>
         </TssCacheProvider>
       </QueryClientProvider>

@@ -34,7 +34,7 @@ export function JotForm({ onCreate }: Props) {
         reset();
       })
       .catch((err: unknown) => {
-        console.error('i should show a toast or something', err);
+        console.error('this error will propagate up, no need to toast', err);
       });
   };
 

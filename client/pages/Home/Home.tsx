@@ -5,6 +5,7 @@ import { JotTable } from '../../components/JotTable/JotTable';
 import { useCreateJot } from '../../lib/createJot';
 import { useJots } from '../../lib/listJots';
 import { partitionJots } from '../../lib/partitionJots';
+import { useShowErrorToast } from '../../lib/showErrorToast';
 import { useStyles } from './styles';
 
 export function Home() {
@@ -13,6 +14,7 @@ export function Home() {
   const jotQuery = useJots();
   const jots = jotQuery.data?.pages.flatMap((page) => page.jots) ?? [];
   const { pinned, byDate } = partitionJots(jots);
+  const showErrorToast = useShowErrorToast();
 
   return (
     <Center>
@@ -21,8 +23,8 @@ export function Home() {
           onCreate={async (tagName, content) => {
             try {
               await createJot.mutateAsync({ tagName, content });
-            } catch (err) {
-              console.error('i should show a toast or something', err);
+            } catch {
+              showErrorToast('failed to jot', 'try again?');
             }
           }}
         />
