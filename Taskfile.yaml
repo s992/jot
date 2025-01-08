@@ -75,4 +75,4 @@ tasks:
     cmds:
       - npx prettier --log-level error --write .
       # fixes prettier sql formatting breaking sqlc by adding a space
-      - fd -tfile -esql -x sed -r -i 's/(sqlc\.\w+) \(/\1(/g' {}
+      - find . -type f -name "*.sql" -exec sed -i'' -E 's/(sqlc\.[[:alnum:]]+) \(/\1(/g' {} \;

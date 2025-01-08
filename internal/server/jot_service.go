@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"connectrpc.com/connect"
 	pb "github.com/s992/jot/internal/generated/proto/jot/v1"
@@ -91,4 +92,60 @@ func (s *jotService) ListJots(ctx context.Context, req *connect.Request[pb.ListJ
 	return connect.NewResponse(&pb.ListJotsResponse{
 		Jots: pbJots,
 	}), nil
+}
+
+func (s *jotService) UpdateJot(ctx context.Context, req *connect.Request[pb.UpdateJotRequest]) (*connect.Response[pb.Jot], error) {
+	jot, err := s.validateAndGetJot(ctx, req.Msg.JotId)
+	if err != nil {
+		return nil, err
+	}
+
+	if jot.Deleted {
+		return nil, connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("cannot modify deleted jot"))
+	}
+
+	params := db.UpdateJotParams{
+		ID:      req.Msg.JotId,
+		Pinned:  req.Msg.Pinned,
+		Deleted: req.Msg.Deleted,
+	}
+
+	updatedJot, err := s.q.UpdateJot(ctx, params)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update jot: %w", err))
+	}
+
+	fullJot, err := s.validateAndGetJot(ctx, updatedJot.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&pb.Jot{JotId: jot.ID,
+		CreatedAt: timestamppb.New(fullJot.CreatedAt),
+		UpdatedAt: timestamppb.New(fullJot.UpdatedAt),
+		Content:   fullJot.Content,
+		Pinned:    fullJot.Pinned,
+		Deleted:   fullJot.Deleted,
+		Tag: &pb.Tag{
+			TagId: fullJot.Tag.ID,
+			Name:  fullJot.Tag.Name,
+		}}), nil
+}
+
+func (s *jotService) validateAndGetJot(ctx context.Context, id int64) (db.GetJotByIdRow, error) {
+	jot, err := s.q.GetJotById(ctx, id)
+	if err == sql.ErrNoRows {
+		return db.GetJotByIdRow{}, connect.NewError(connect.CodeNotFound, fmt.Errorf("jot not found"))
+	}
+	if err != nil {
+		return db.GetJotByIdRow{}, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get jot: %w", err))
+	}
+	return jot, nil
+}
+
+func (s *jotService) validateNotDeleted(jot db.GetJotByIdRow) error {
+	if jot.Deleted {
+		return connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("cannot modify deleted jot"))
+	}
+	return nil
 }

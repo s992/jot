@@ -13,3 +13,8 @@ export const createJot = JotService.method.createJot;
  * @generated from rpc jot.v1.JotService.ListJots
  */
 export const listJots = JotService.method.listJots;
+
+/**
+ * @generated from rpc jot.v1.JotService.UpdateJot
+ */
+export const updateJot = JotService.method.updateJot;

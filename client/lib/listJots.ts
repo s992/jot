@@ -1,6 +1,11 @@
-import { useInfiniteQuery } from '@connectrpc/connect-query';
+import {
+  createConnectQueryKey,
+  useInfiniteQuery,
+} from '@connectrpc/connect-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { listJots } from '../generated/proto/jot/v1/jot-JotService_connectquery';
+import { JotService } from '../generated/proto/jot/v1/jot_pb';
 
 export function useJots(pageSize = 100n) {
   return useInfiniteQuery(
@@ -24,4 +29,17 @@ export function useJots(pageSize = 100n) {
       },
     },
   );
+}
+
+export function useInvalidateJotList() {
+  const client = useQueryClient();
+
+  return async () => {
+    await client.invalidateQueries({
+      queryKey: createConnectQueryKey({
+        schema: JotService,
+        cardinality: 'infinite',
+      }),
+    });
+  };
 }

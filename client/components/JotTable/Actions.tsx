@@ -3,6 +3,7 @@ import {
   IconCopy,
   IconExternalLink,
   IconPin,
+  IconPinFilled,
   IconTrash,
 } from '@tabler/icons-react';
 
@@ -10,6 +11,7 @@ import { type Jot } from '../../generated/proto/jot/v1/jot_pb';
 import { isUrl } from '../../lib/isUrl';
 import { useShowErrorToast } from '../../lib/showErrorToast';
 import { useShowSuccessToast } from '../../lib/showSuccessToast';
+import { useUpdateJot } from '../../lib/updateJot';
 import { useStyles } from './styles';
 
 type Props = {
@@ -20,6 +22,7 @@ export function Actions({ jot }: Props) {
   const { classes } = useStyles();
   const showSuccessToast = useShowSuccessToast();
   const showErrorToast = useShowErrorToast();
+  const updateJot = useUpdateJot();
 
   return (
     <>
@@ -53,14 +56,32 @@ export function Actions({ jot }: Props) {
       >
         <IconCopy />
       </ActionIcon>
-      <ActionIcon variant="subtle" size="sm" className={classes.actionIcon}>
-        <IconPin />
+      <ActionIcon
+        variant="subtle"
+        size="sm"
+        className={classes.actionIcon}
+        onClick={() => {
+          updateJot.mutate({
+            jotId: jot.jotId,
+            pinned: !jot.pinned,
+            deleted: jot.deleted,
+          });
+        }}
+      >
+        {jot.pinned ? <IconPinFilled /> : <IconPin />}
       </ActionIcon>
       <ActionIcon
         variant="subtle"
         size="sm"
         color="red"
         className={classes.actionIcon}
+        onClick={() => {
+          updateJot.mutate({
+            jotId: jot.jotId,
+            deleted: true,
+            pinned: jot.pinned,
+          });
+        }}
       >
         <IconTrash />
       </ActionIcon>

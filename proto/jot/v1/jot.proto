@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package jot.v1;
 
+import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 
 message Empty {}
@@ -43,9 +44,16 @@ message FindTagsResponse {
   repeated Tag tags = 1;
 }
 
+message UpdateJotRequest {
+  int64 jot_id = 1;
+  bool pinned = 2;
+  bool deleted = 3;
+}
+
 service JotService {
   rpc CreateJot (CreateJotRequest) returns (Jot) {}
   rpc ListJots (ListJotsRequest) returns (ListJotsResponse) {}
+  rpc UpdateJot (UpdateJotRequest) returns (Jot) {}
 }
 
 service TagService {

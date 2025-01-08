@@ -39,6 +39,8 @@ const (
 	JotServiceCreateJotProcedure = "/jot.v1.JotService/CreateJot"
 	// JotServiceListJotsProcedure is the fully-qualified name of the JotService's ListJots RPC.
 	JotServiceListJotsProcedure = "/jot.v1.JotService/ListJots"
+	// JotServiceUpdateJotProcedure is the fully-qualified name of the JotService's UpdateJot RPC.
+	JotServiceUpdateJotProcedure = "/jot.v1.JotService/UpdateJot"
 	// TagServiceFindTagsProcedure is the fully-qualified name of the TagService's FindTags RPC.
 	TagServiceFindTagsProcedure = "/jot.v1.TagService/FindTags"
 )
@@ -48,6 +50,7 @@ var (
 	jotServiceServiceDescriptor         = v1.File_jot_v1_jot_proto.Services().ByName("JotService")
 	jotServiceCreateJotMethodDescriptor = jotServiceServiceDescriptor.Methods().ByName("CreateJot")
 	jotServiceListJotsMethodDescriptor  = jotServiceServiceDescriptor.Methods().ByName("ListJots")
+	jotServiceUpdateJotMethodDescriptor = jotServiceServiceDescriptor.Methods().ByName("UpdateJot")
 	tagServiceServiceDescriptor         = v1.File_jot_v1_jot_proto.Services().ByName("TagService")
 	tagServiceFindTagsMethodDescriptor  = tagServiceServiceDescriptor.Methods().ByName("FindTags")
 )
@@ -56,6 +59,7 @@ var (
 type JotServiceClient interface {
 	CreateJot(context.Context, *connect.Request[v1.CreateJotRequest]) (*connect.Response[v1.Jot], error)
 	ListJots(context.Context, *connect.Request[v1.ListJotsRequest]) (*connect.Response[v1.ListJotsResponse], error)
+	UpdateJot(context.Context, *connect.Request[v1.UpdateJotRequest]) (*connect.Response[v1.Jot], error)
 }
 
 // NewJotServiceClient constructs a client for the jot.v1.JotService service. By default, it uses
@@ -80,6 +84,12 @@ func NewJotServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...
 			connect.WithSchema(jotServiceListJotsMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		updateJot: connect.NewClient[v1.UpdateJotRequest, v1.Jot](
+			httpClient,
+			baseURL+JotServiceUpdateJotProcedure,
+			connect.WithSchema(jotServiceUpdateJotMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -87,6 +97,7 @@ func NewJotServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...
 type jotServiceClient struct {
 	createJot *connect.Client[v1.CreateJotRequest, v1.Jot]
 	listJots  *connect.Client[v1.ListJotsRequest, v1.ListJotsResponse]
+	updateJot *connect.Client[v1.UpdateJotRequest, v1.Jot]
 }
 
 // CreateJot calls jot.v1.JotService.CreateJot.
@@ -99,10 +110,16 @@ func (c *jotServiceClient) ListJots(ctx context.Context, req *connect.Request[v1
 	return c.listJots.CallUnary(ctx, req)
 }
 
+// UpdateJot calls jot.v1.JotService.UpdateJot.
+func (c *jotServiceClient) UpdateJot(ctx context.Context, req *connect.Request[v1.UpdateJotRequest]) (*connect.Response[v1.Jot], error) {
+	return c.updateJot.CallUnary(ctx, req)
+}
+
 // JotServiceHandler is an implementation of the jot.v1.JotService service.
 type JotServiceHandler interface {
 	CreateJot(context.Context, *connect.Request[v1.CreateJotRequest]) (*connect.Response[v1.Jot], error)
 	ListJots(context.Context, *connect.Request[v1.ListJotsRequest]) (*connect.Response[v1.ListJotsResponse], error)
+	UpdateJot(context.Context, *connect.Request[v1.UpdateJotRequest]) (*connect.Response[v1.Jot], error)
 }
 
 // NewJotServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -123,12 +140,20 @@ func NewJotServiceHandler(svc JotServiceHandler, opts ...connect.HandlerOption) 
 		connect.WithSchema(jotServiceListJotsMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	jotServiceUpdateJotHandler := connect.NewUnaryHandler(
+		JotServiceUpdateJotProcedure,
+		svc.UpdateJot,
+		connect.WithSchema(jotServiceUpdateJotMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/jot.v1.JotService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case JotServiceCreateJotProcedure:
 			jotServiceCreateJotHandler.ServeHTTP(w, r)
 		case JotServiceListJotsProcedure:
 			jotServiceListJotsHandler.ServeHTTP(w, r)
+		case JotServiceUpdateJotProcedure:
+			jotServiceUpdateJotHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -144,6 +169,10 @@ func (UnimplementedJotServiceHandler) CreateJot(context.Context, *connect.Reques
 
 func (UnimplementedJotServiceHandler) ListJots(context.Context, *connect.Request[v1.ListJotsRequest]) (*connect.Response[v1.ListJotsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("jot.v1.JotService.ListJots is not implemented"))
+}
+
+func (UnimplementedJotServiceHandler) UpdateJot(context.Context, *connect.Request[v1.UpdateJotRequest]) (*connect.Response[v1.Jot], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("jot.v1.JotService.UpdateJot is not implemented"))
 }
 
 // TagServiceClient is a client for the jot.v1.TagService service.

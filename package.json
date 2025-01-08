@@ -10,7 +10,7 @@
     "prepare": "husky",
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",
-    "lint:check": "eslint --report-unused-disable-directives --max-warnings 0",
+    "lint:check": "eslint --report-unused-disable-directives --max-warnings 0 --no-warn-ignored",
     "lint:fix": "npm run lint:check -- --fix"
   },
   "dependencies": {

@@ -27,3 +27,29 @@ limit
 offset
   sqlc.arg('offset')
 ;
+
+-- name: UpdateJot :one
+update jot
+set
+  pinned = sqlc.arg('pinned'),
+  deleted = sqlc.arg('deleted'),
+  updated_at = current_timestamp
+where
+  id = sqlc.arg('id') returning *
+;
+
+-- name: GetJotById :one
+select
+  j.id,
+  j.created_at,
+  j.updated_at,
+  j.content,
+  j.pinned,
+  j.deleted,
+  sqlc.embed(t)
+from
+  jot j
+  inner join tag t on j.tag_id = t.id
+where
+  j.id = sqlc.arg('id')
+;

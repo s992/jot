@@ -181,6 +181,32 @@ export declare type FindTagsResponse = Message<"jot.v1.FindTagsResponse"> & {
 export declare const FindTagsResponseSchema: GenMessage<FindTagsResponse>;
 
 /**
+ * @generated from message jot.v1.UpdateJotRequest
+ */
+export declare type UpdateJotRequest = Message<"jot.v1.UpdateJotRequest"> & {
+  /**
+   * @generated from field: int64 jot_id = 1;
+   */
+  jotId: bigint;
+
+  /**
+   * @generated from field: bool pinned = 2;
+   */
+  pinned: boolean;
+
+  /**
+   * @generated from field: bool deleted = 3;
+   */
+  deleted: boolean;
+};
+
+/**
+ * Describes the message jot.v1.UpdateJotRequest.
+ * Use `create(UpdateJotRequestSchema)` to create a new message.
+ */
+export declare const UpdateJotRequestSchema: GenMessage<UpdateJotRequest>;
+
+/**
  * @generated from service jot.v1.JotService
  */
 export declare const JotService: GenService<{
@@ -199,6 +225,14 @@ export declare const JotService: GenService<{
     methodKind: "unary";
     input: typeof ListJotsRequestSchema;
     output: typeof ListJotsResponseSchema;
+  },
+  /**
+   * @generated from rpc jot.v1.JotService.UpdateJot
+   */
+  updateJot: {
+    methodKind: "unary";
+    input: typeof UpdateJotRequestSchema;
+    output: typeof JotSchema;
   },
 }>;
 

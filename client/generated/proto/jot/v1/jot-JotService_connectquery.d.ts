@@ -12,3 +12,7 @@ export const createJot: typeof JotService["method"]["createJot"];
  * @generated from rpc jot.v1.JotService.ListJots
  */
 export const listJots: typeof JotService["method"]["listJots"];
+/**
+ * @generated from rpc jot.v1.JotService.UpdateJot
+ */
+export const updateJot: typeof JotService["method"]["updateJot"];

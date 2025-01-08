@@ -37,6 +37,50 @@ func (q *Queries) CreateJot(ctx context.Context, arg CreateJotParams) (Jot, erro
 	return i, err
 }
 
+const getJotById = `-- name: GetJotById :one
+;
+
+select
+  j.id,
+  j.created_at,
+  j.updated_at,
+  j.content,
+  j.pinned,
+  j.deleted,
+  t.id, t.name
+from
+  jot j
+  inner join tag t on j.tag_id = t.id
+where
+  j.id = ?1
+`
+
+type GetJotByIdRow struct {
+	ID        int64     `json:"id"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	Content   string    `json:"content"`
+	Pinned    bool      `json:"pinned"`
+	Deleted   bool      `json:"deleted"`
+	Tag       Tag       `json:"tag"`
+}
+
+func (q *Queries) GetJotById(ctx context.Context, id int64) (GetJotByIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getJotById, id)
+	var i GetJotByIdRow
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Content,
+		&i.Pinned,
+		&i.Deleted,
+		&i.Tag.ID,
+		&i.Tag.Name,
+	)
+	return i, err
+}
+
 const listJots = `-- name: ListJots :many
 ;
 
@@ -107,4 +151,37 @@ func (q *Queries) ListJots(ctx context.Context, arg ListJotsParams) ([]ListJotsR
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateJot = `-- name: UpdateJot :one
+;
+
+update jot
+set
+  pinned = ?1,
+  deleted = ?2,
+  updated_at = current_timestamp
+where
+  id = ?3 returning id, content, created_at, updated_at, pinned, deleted, tag_id
+`
+
+type UpdateJotParams struct {
+	Pinned  bool  `json:"pinned"`
+	Deleted bool  `json:"deleted"`
+	ID      int64 `json:"id"`
+}
+
+func (q *Queries) UpdateJot(ctx context.Context, arg UpdateJotParams) (Jot, error) {
+	row := q.db.QueryRowContext(ctx, updateJot, arg.Pinned, arg.Deleted, arg.ID)
+	var i Jot
+	err := row.Scan(
+		&i.ID,
+		&i.Content,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Pinned,
+		&i.Deleted,
+		&i.TagID,
+	)
+	return i, err
 }
