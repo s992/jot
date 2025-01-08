@@ -48,9 +48,11 @@ tasks:
 
   gen-sqlc:
     desc: Generates db code
+    deps:
+      - task: fix-prettier-sql
     cmds:
       - rm -rf ./internal/generated/db
-      - sqlc generate
+      - go run github.com/sqlc-dev/sqlc/cmd/sqlc generate
 
   gen-proto:
     desc: Generates proto code
@@ -68,11 +70,19 @@ tasks:
   format-go:
     desc: Formats all go code
     cmds:
-      - gofmt -w .
+      - go fmt .
 
   format-prettier:
     desc: Formats code with prettier
     cmds:
       - npx prettier --log-level error --write .
-      # fixes prettier sql formatting breaking sqlc by adding a space
+      - task fix-prettier-sql
+
+  fix-prettier-sql:
+    desc: fixes prettier's incompatibility with sqlc
+    cmds:
+      # prettier's sql formatting breaks sqlc because prettier wants to put spaces between a
+      # word and an open paren, like this: `where (...)`. this is problematic for sqlc named
+      # args because they're formatted as `sqlc.arg(...)`, which results in prettier outputting
+      # `sqlc.arg (...)`. this causes sqlc to blow up because of the space between arg and (
       - find . -type f -name "*.sql" -exec sed -i'' -E 's/(sqlc\.[[:alnum:]]+) \(/\1(/g' {} \;
