@@ -13,12 +13,8 @@ tasks:
 
   run-go:
     desc: Runs backend in dev mode
-    env:
-      JOT_DB_DIR: /tmp
-      JOT_PORT: 3000
-      JOT_PRODUCTION: false
     cmds:
-      - go run main.go
+      - go run .
 
   run-js:
     desc: Runs frontend in dev mode
@@ -28,9 +24,11 @@ tasks:
       - npm run dev
 
   build:
-    desc: Builds all targets
+    desc: Builds a production executable
     deps:
-      - task: build-js
+      - build-js
+    cmds:
+      - task build-go
 
   build-js:
     desc: Builds client app
@@ -39,6 +37,11 @@ tasks:
       NODE_ENV: production
     cmds:
       - npm run build
+
+  build-go:
+    desc: Builds just the go binary without the client
+    cmds:
+      - go build -o ./build/jot -tags production .
 
   gen:
     desc: Runs all codegen targets

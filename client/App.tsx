@@ -13,7 +13,7 @@ import { Home } from './pages/Home';
 const finalTransport = createConnectTransport({
   baseUrl:
     import.meta.env.VITE_JOT_PRODUCTION !== 'true'
-      ? 'http://localhost:3000'
+      ? `http://localhost:3000`
       : '/',
 });
 const queryClient = new QueryClient();

@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
-	"embed"
+	_ "embed"
 	"fmt"
 	"path"
 
@@ -17,9 +17,6 @@ import (
 //go:embed sql/schema.sql
 var ddl string
 
-//go:embed dist/*
-var clientFiles embed.FS
-
 func main() {
 	config.InitEnv()
 
@@ -28,11 +25,10 @@ func main() {
 		panic(err)
 	}
 
-	if err := server.Run(&server.ServerConfig{
-		ClientFiles: clientFiles,
+	if err := server.Init(&server.ServerConfig{
+		ClientFiles: ClientFiles,
 		Port:        config.Env.Port,
 		Queries:     queries,
-		Production:  config.Env.Production,
 	}); err != nil {
 		panic(err)
 	}

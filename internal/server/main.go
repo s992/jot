@@ -15,11 +15,10 @@ import (
 type ServerConfig struct {
 	ClientFiles embed.FS
 	Port        int
-	Production  bool
 	Queries     *db.Queries
 }
 
-func Run(config *ServerConfig) error {
+func Run(config *ServerConfig, isProduction bool) error {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -38,7 +37,7 @@ func Run(config *ServerConfig) error {
 	logLineSvcPath, logLineSvcHandler := jotv1connect.NewJotServiceHandler(jotService)
 	r.Mount(logLineSvcPath, logLineSvcHandler)
 
-	if config.Production {
+	if isProduction {
 		r.Handle("/*", SPAHandler(config.ClientFiles))
 	}
 

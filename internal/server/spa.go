@@ -12,7 +12,7 @@ import (
 
 // stolen from https://github.com/go-chi/chi/issues/611#issuecomment-1804702959
 func SPAHandler(files embed.FS) http.HandlerFunc {
-	spaFS, err := fs.Sub(files, "dist")
+	spaFS, err := fs.Sub(files, "client/dist")
 	if err != nil {
 		panic(fmt.Errorf("failed getting the sub tree for the site files: %w", err))
 	}
