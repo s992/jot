@@ -18,16 +18,10 @@ func InitEnv() {
 }
 
 func loadEnvVariables() (config *envConfig) {
-	viper.AddConfigPath(".")
-	viper.SetConfigName(".env")
 	viper.SetConfigType("env")
-	viper.SetDefault("JOT_DB_DIR", "/data")
+	viper.SetDefault("JOT_DB_DIR", "/tmp")
 	viper.SetDefault("JOT_PORT", "3000")
 	viper.AutomaticEnv()
-
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal("Error reading env file: ", err)
-	}
 
 	if err := viper.Unmarshal(&config); err != nil {
 		log.Fatal(err)
