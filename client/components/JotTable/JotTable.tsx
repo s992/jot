@@ -8,10 +8,11 @@ import { JotRow } from './JotRow';
 type Props = {
   jots: Jot[];
   activeIdx: number | null;
+  onRowClick: (rowIdx: number) => void;
   onTagClick?: (tag: Tag) => void;
 };
 
-export function JotTable({ jots, activeIdx }: Props) {
+export function JotTable({ jots, activeIdx, onRowClick }: Props) {
   const { copyContent, deleteJot, openUrl, togglePin } = useActions(
     activeIdx !== null ? jots[activeIdx] : null,
   );
@@ -31,6 +32,9 @@ export function JotTable({ jots, activeIdx }: Props) {
           key={`jot-${jot.jotId}`}
           jot={jot}
           isActive={idx === activeIdx}
+          onClick={() => {
+            onRowClick(idx);
+          }}
         />
       ))}
     </>

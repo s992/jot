@@ -12,9 +12,10 @@ import { useStyles } from './styles';
 type Props = {
   jot: Jot;
   isActive: boolean;
+  onClick: () => void;
 };
 
-export function JotRow({ jot, isActive }: Props) {
+export function JotRow({ jot, isActive, onClick }: Props) {
   const scrollRef = useRef<HTMLTableRowElement>(null);
   const previousIsActive = usePrevious(isActive);
   const { ref, entry } = useIntersection({
@@ -37,13 +38,18 @@ export function JotRow({ jot, isActive }: Props) {
         className={cx(classes.tableRow, {
           [classes.activeTableRow]: isActive,
         })}
+        onClick={onClick}
       >
         <Table.Td
           ref={ref}
           className={cx(classes.autoWidthTd, classes.baseline)}
         >
           {jot.tag && <TagDisplay tag={jot.tag} />}
-          <div className={classes.actionContainer}>
+          <div
+            className={cx(classes.actionContainer, {
+              [classes.visibleActionContainer]: isActive,
+            })}
+          >
             <Actions jot={jot} />
           </div>
         </Table.Td>

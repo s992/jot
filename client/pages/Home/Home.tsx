@@ -27,7 +27,8 @@ export function Home() {
   );
   const buckets = useMemo(() => partitionJots(jots), [jots]);
   const showErrorToast = useShowErrorToast();
-  const { position, resetPosition } = useKeyboardNavigation(buckets);
+  const { position, resetPosition, onRowClicked } =
+    useKeyboardNavigation(buckets);
 
   useHotkeys([
     [
@@ -69,6 +70,9 @@ export function Home() {
                     activeIdx={
                       idx === position.bucketIdx ? position.rowIdx : null
                     }
+                    onRowClick={(rowIdx) => {
+                      onRowClicked(idx, rowIdx);
+                    }}
                   />
                 </Table.Tbody>
               </Fragment>

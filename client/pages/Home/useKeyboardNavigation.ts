@@ -15,6 +15,10 @@ export function useKeyboardNavigation<T>(buckets: Bucket<T>[]) {
     setPosition({ bucketIdx: -1, rowIdx: -1 });
   };
 
+  const onRowClicked = (bucketIdx: number, rowIdx: number) => {
+    setPosition({ bucketIdx, rowIdx });
+  };
+
   useEffect(() => {
     resetPosition();
   }, [buckets]);
@@ -106,5 +110,5 @@ export function useKeyboardNavigation<T>(buckets: Bucket<T>[]) {
 
   useDoubleTapHotKey('g', onStart);
 
-  return { position, resetPosition };
+  return { position, resetPosition, onRowClicked };
 }

@@ -34,6 +34,9 @@ export const useStyles = tss
       paddingTop: 'var(--mantine-spacing-xs)',
       visibility: 'hidden',
     },
+    visibleActionContainer: {
+      visibility: 'visible',
+    },
     actionIcon: {
       opacity: 0.3,
       '&:hover': {
