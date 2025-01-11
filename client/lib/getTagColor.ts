@@ -1,5 +1,3 @@
-import { type Tag } from '../generated/proto/jot/v1/jot_pb';
-
 const COLORS = [
   '#f44336',
   '#e81e63',
@@ -24,15 +22,15 @@ const COLORS = [
 
 const lookup: Record<string, string> = {};
 
-export function getTagColor(tag: Tag): string {
-  if (!lookup[tag.name]) {
-    const hash = hashString(tag.name);
+export function getTagColor(tagName: string): string {
+  if (!lookup[tagName]) {
+    const hash = hashString(tagName);
     const index = Math.abs(hash) % COLORS.length;
 
-    lookup[tag.name] = COLORS[index];
+    lookup[tagName] = COLORS[index];
   }
 
-  return lookup[tag.name];
+  return lookup[tagName];
 }
 
 function hashString(tag: string) {

@@ -7,12 +7,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import { listJots } from '../generated/proto/jot/v1/jot-JotService_connectquery';
 import { JotService } from '../generated/proto/jot/v1/jot_pb';
 
-export function useJots(pageSize = 100n) {
+export function useJots(searchTerm?: string, pageSize = 100n) {
   return useInfiniteQuery(
     listJots,
     {
       pageSize,
       page: 1n,
+      searchTerm,
     },
     {
       pageParamKey: 'page',

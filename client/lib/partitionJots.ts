@@ -1,5 +1,5 @@
 import { timestampDate } from '@bufbuild/protobuf/wkt';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 
 import type { Jot } from '../generated/proto/jot/v1/jot_pb';
 
@@ -29,8 +29,13 @@ export function partitionJots<T extends Jot>(jots: T[]) {
   const buckets = [
     { heading: 'pinned', items: pinned },
     ...Object.keys(byDate)
-      .sort()
-      .reverse()
+      .sort((a, b) => {
+        const ref = new Date();
+
+        return parse(a, 'MM-dd-yyyy', ref) < parse(b, 'MM-dd-yyyy', ref)
+          ? 1
+          : -1;
+      })
       .map((date) => ({
         heading: date,
         items: byDate[date],

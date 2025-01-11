@@ -1,8 +1,10 @@
 import { Center, Stack } from '@mantine/core';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { JotForm } from '../../components/JotForm';
 import { JotTable } from '../../components/JotTable/JotTable';
+import { SearchBar } from '../../components/SearchBar';
+import { SearchModal } from '../../components/SearchModal';
 import { useCreateJot } from '../../lib/createJot';
 import { useJots } from '../../lib/listJots';
 import { partitionJots } from '../../lib/partitionJots';
@@ -11,9 +13,10 @@ import { useStyles } from './styles';
 import { useKeyboardNavigation } from './useKeyboardNavigation';
 
 export function Home() {
+  const [search, setSearch] = useState<string | undefined>();
   const { classes } = useStyles();
   const createJot = useCreateJot();
-  const jotQuery = useJots();
+  const jotQuery = useJots(search);
   const jots = useMemo(
     () => jotQuery.data?.pages.flatMap((page) => page.jots) ?? [],
     [jotQuery.data],
@@ -23,30 +26,39 @@ export function Home() {
   const { position, resetPosition } = useKeyboardNavigation(buckets);
 
   return (
-    <Center>
-      <Stack className={classes.container}>
-        <JotForm
-          onCreate={async (tagName, content) => {
-            try {
-              await createJot.mutateAsync({ tagName, content });
-            } catch {
-              showErrorToast('failed to jot');
-            }
-          }}
-          onFocused={() => {
-            resetPosition();
-          }}
-        />
-        {buckets.map((bucket, idx) => (
-          <div key={bucket.heading}>
-            <h2 className={classes.sectionHeader}>{bucket.heading}</h2>
-            <JotTable
-              jots={bucket.items}
-              activeIdx={idx === position.bucketIdx ? position.rowIdx : null}
-            />
-          </div>
-        ))}
-      </Stack>
-    </Center>
+    <>
+      <Center>
+        <Stack className={classes.container}>
+          <JotForm
+            onCreate={async (tagName, content) => {
+              try {
+                await createJot.mutateAsync({ tagName, content });
+              } catch {
+                showErrorToast('failed to jot');
+              }
+            }}
+            onFocused={() => {
+              resetPosition();
+            }}
+          />
+          <SearchBar search={search} onSearch={setSearch} />
+          {buckets.map((bucket, idx) => (
+            <div key={bucket.heading}>
+              <h2 className={classes.sectionHeader}>{bucket.heading}</h2>
+              <JotTable
+                jots={bucket.items}
+                activeIdx={idx === position.bucketIdx ? position.rowIdx : null}
+              />
+            </div>
+          ))}
+        </Stack>
+      </Center>
+      <SearchModal
+        canClear={!!search}
+        onSearch={(term) => {
+          setSearch(term);
+        }}
+      />
+    </>
   );
 }
