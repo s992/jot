@@ -20,7 +20,7 @@ export function Home() {
   );
   const buckets = useMemo(() => partitionJots(jots), [jots]);
   const showErrorToast = useShowErrorToast();
-  const [activeBucket, activeRow] = useKeyboardNavigation(buckets);
+  const { position, resetPosition } = useKeyboardNavigation(buckets);
 
   return (
     <Center>
@@ -33,18 +33,19 @@ export function Home() {
               showErrorToast('failed to jot');
             }
           }}
+          onFocused={() => {
+            resetPosition();
+          }}
         />
-        {buckets
-          .filter((bucket) => bucket.items.length)
-          .map((bucket, idx) => (
-            <div key={bucket.heading}>
-              <h2 className={classes.sectionHeader}>{bucket.heading}</h2>
-              <JotTable
-                jots={bucket.items}
-                activeIdx={idx === activeBucket ? activeRow : null}
-              />
-            </div>
-          ))}
+        {buckets.map((bucket, idx) => (
+          <div key={bucket.heading}>
+            <h2 className={classes.sectionHeader}>{bucket.heading}</h2>
+            <JotTable
+              jots={bucket.items}
+              activeIdx={idx === position.bucketIdx ? position.rowIdx : null}
+            />
+          </div>
+        ))}
       </Stack>
     </Center>
   );

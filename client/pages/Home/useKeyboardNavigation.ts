@@ -19,6 +19,26 @@ export function useKeyboardNavigation<T>(buckets: Bucket<T>[]) {
     resetPosition();
   }, [buckets]);
 
+  const maybeGoToNextBucket = () => {
+    if (position.bucketIdx < usableBuckets.length - 1) {
+      setPosition((pos) => ({
+        ...pos,
+        bucketIdx: pos.bucketIdx + 1,
+        rowIdx: 0,
+      }));
+    }
+  };
+
+  const maybeGoToPrevBucket = (end = true) => {
+    if (position.bucketIdx > 0) {
+      const prevBucket = usableBuckets[position.bucketIdx - 1];
+      setPosition({
+        bucketIdx: position.bucketIdx - 1,
+        rowIdx: end ? prevBucket.items.length - 1 : 0,
+      });
+    }
+  };
+
   const onDown = () => {
     if (position.bucketIdx === -1 || position.rowIdx === -1) {
       setPosition({ bucketIdx: 0, rowIdx: 0 });
@@ -32,14 +52,7 @@ export function useKeyboardNavigation<T>(buckets: Bucket<T>[]) {
       return;
     }
 
-    if (position.bucketIdx < usableBuckets.length - 1) {
-      setPosition((pos) => ({
-        ...pos,
-        bucketIdx: pos.bucketIdx + 1,
-        rowIdx: 0,
-      }));
-      return;
-    }
+    maybeGoToNextBucket();
   };
   const onUp = () => {
     if (position.bucketIdx === -1 || position.rowIdx === -1) {
@@ -52,13 +65,21 @@ export function useKeyboardNavigation<T>(buckets: Bucket<T>[]) {
       return;
     }
 
-    if (position.bucketIdx > 0) {
-      const prevBucket = usableBuckets[position.bucketIdx - 1];
-      setPosition({
-        bucketIdx: position.bucketIdx - 1,
-        rowIdx: prevBucket.items.length - 1,
-      });
-    }
+    maybeGoToPrevBucket();
+  };
+  const onStart = () => {
+    setPosition({ bucketIdx: 0, rowIdx: 0 });
+  };
+  const onEnd = () => {
+    const lastBucketIdx = usableBuckets.length - 1;
+
+    setPosition({
+      bucketIdx: lastBucketIdx,
+      rowIdx: usableBuckets[lastBucketIdx].items.length - 1,
+    });
+  };
+  const onPgUp = () => {
+    maybeGoToPrevBucket(false);
   };
 
   useHotkeys([
@@ -66,28 +87,20 @@ export function useKeyboardNavigation<T>(buckets: Bucket<T>[]) {
     ['ArrowDown', onDown],
     ['k', onUp],
     ['ArrowUp', onUp],
+    ['Shift+g', onEnd],
+    ['Home', onStart],
+    ['End', onEnd],
+    ['Ctrl+d', maybeGoToNextBucket],
+    ['Ctrl+u', onPgUp],
     [
       'Escape',
       () => {
         resetPosition();
       },
     ],
-    [
-      'Shift+g',
-      () => {
-        const lastBucketIdx = usableBuckets.length - 1;
-
-        setPosition({
-          bucketIdx: lastBucketIdx,
-          rowIdx: usableBuckets[lastBucketIdx].items.length - 1,
-        });
-      },
-    ],
   ]);
 
-  useDoubleTapHotKey('g', () => {
-    setPosition({ bucketIdx: 0, rowIdx: 0 });
-  });
+  useDoubleTapHotKey('g', onStart);
 
-  return [position.bucketIdx, position.rowIdx];
+  return { position, resetPosition };
 }

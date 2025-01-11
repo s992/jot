@@ -9,13 +9,17 @@ import { useSuggestTag } from './useSuggestTag';
 
 type Props = {
   onCreate: (tagName: string, content: Jot['content']) => Promise<void>;
+  onFocused: () => void;
 };
 
-export function JotForm({ onCreate }: Props) {
+export function JotForm({ onCreate, onFocused }: Props) {
   const { classes } = useStyles();
   const { ref: wrapperRef, focused } = useFocusWithin();
   const inputRef = useRef<HTMLInputElement>(null);
-  const focus = () => inputRef.current?.focus();
+  const focus = () => {
+    inputRef.current?.focus();
+    onFocused();
+  };
   const {
     inputValue,
     matchedTag,

@@ -37,5 +37,5 @@ export function partitionJots<T extends Jot>(jots: T[]) {
       })),
   ];
 
-  return buckets;
+  return buckets.filter(({ items }) => items.length);
 }
