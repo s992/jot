@@ -1,6 +1,9 @@
-import { Center, Stack } from '@mantine/core';
+import { ActionIcon, Center, Stack } from '@mantine/core';
+import { useHotkeys } from '@mantine/hooks';
+import { IconHelp } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 
+import { HelpModal } from '../../components/HelpModal/HelpModal';
 import { JotForm } from '../../components/JotForm';
 import { JotTable } from '../../components/JotTable/JotTable';
 import { SearchBar } from '../../components/SearchBar';
@@ -13,6 +16,7 @@ import { useStyles } from './styles';
 import { useKeyboardNavigation } from './useKeyboardNavigation';
 
 export function Home() {
+  const [helpOpen, setHelpOpen] = useState(false);
   const [search, setSearch] = useState<string | undefined>();
   const { classes } = useStyles();
   const createJot = useCreateJot();
@@ -24,6 +28,15 @@ export function Home() {
   const buckets = useMemo(() => partitionJots(jots), [jots]);
   const showErrorToast = useShowErrorToast();
   const { position, resetPosition } = useKeyboardNavigation(buckets);
+
+  useHotkeys([
+    [
+      'shift+slash',
+      () => {
+        setHelpOpen(true);
+      },
+    ],
+  ]);
 
   return (
     <>
@@ -59,6 +72,22 @@ export function Home() {
           setSearch(term);
         }}
       />
+      <HelpModal
+        open={helpOpen}
+        onClose={() => {
+          setHelpOpen(false);
+        }}
+      />
+      <Stack className={classes.floatingActionContainer}>
+        <ActionIcon
+          variant="subtle"
+          onClick={() => {
+            setHelpOpen(true);
+          }}
+        >
+          <IconHelp size={32} color="gray" />
+        </ActionIcon>
+      </Stack>
     </>
   );
 }

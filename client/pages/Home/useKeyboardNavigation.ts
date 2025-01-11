@@ -36,6 +36,10 @@ export function useKeyboardNavigation<T>(buckets: Bucket<T>[]) {
         bucketIdx: position.bucketIdx - 1,
         rowIdx: end ? prevBucket.items.length - 1 : 0,
       });
+    } else {
+      resetPosition();
+      // so we don't get stuck with the input offscreen
+      document.scrollingElement?.scrollTo({ top: 0 });
     }
   };
 
