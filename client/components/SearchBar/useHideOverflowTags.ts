@@ -12,8 +12,6 @@ export function useHideOverflowTags() {
       return;
     }
 
-    console.log('in truncate', { containerWidth });
-
     const containerEl = containerRef.current;
     const tagEls = containerEl.children;
     const gap = parseInt(getComputedStyle(containerEl).columnGap, 10);
