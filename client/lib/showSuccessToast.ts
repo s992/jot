@@ -5,7 +5,11 @@ import { useToastStyle } from './useToastStyle';
 export function useShowSuccessToast() {
   const { classes } = useToastStyle();
 
-  return (title: string, message: string, autoClose: number | boolean = 1000) =>
+  return (
+    title: string,
+    message?: string,
+    autoClose: number | boolean = 1000,
+  ) =>
     notifications.show({
       title,
       message,

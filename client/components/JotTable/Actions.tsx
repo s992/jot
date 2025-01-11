@@ -9,9 +9,7 @@ import {
 
 import { type Jot } from '../../generated/proto/jot/v1/jot_pb';
 import { isUrl } from '../../lib/isUrl';
-import { useShowErrorToast } from '../../lib/showErrorToast';
-import { useShowSuccessToast } from '../../lib/showSuccessToast';
-import { useUpdateJot } from '../../lib/updateJot';
+import { useActions } from '../../lib/useActions';
 import { useStyles } from './styles';
 
 type Props = {
@@ -20,9 +18,7 @@ type Props = {
 
 export function Actions({ jot }: Props) {
   const { classes } = useStyles();
-  const showSuccessToast = useShowSuccessToast();
-  const showErrorToast = useShowErrorToast();
-  const updateJot = useUpdateJot();
+  const { openUrl, copyContent, togglePin, deleteJot } = useActions(jot);
 
   return (
     <>
@@ -31,7 +27,9 @@ export function Actions({ jot }: Props) {
           variant="subtle"
           size="sm"
           className={classes.actionIcon}
-          onClick={() => window.open(jot.content, '_blank')}
+          onClick={() => {
+            openUrl();
+          }}
         >
           <IconExternalLink />
         </ActionIcon>
@@ -41,17 +39,7 @@ export function Actions({ jot }: Props) {
         size="sm"
         className={classes.actionIcon}
         onClick={() => {
-          navigator.clipboard
-            .writeText(jot.content)
-            .then(() => {
-              showSuccessToast('', 'copied to clipboard');
-            })
-            .catch(() => {
-              showErrorToast(
-                'failed to copy',
-                'are clipboard permissions enabled?',
-              );
-            });
+          copyContent();
         }}
       >
         <IconCopy />
@@ -61,11 +49,7 @@ export function Actions({ jot }: Props) {
         size="sm"
         className={classes.actionIcon}
         onClick={() => {
-          updateJot.mutate({
-            jotId: jot.jotId,
-            pinned: !jot.pinned,
-            deleted: jot.deleted,
-          });
+          togglePin();
         }}
       >
         {jot.pinned ? <IconPinFilled /> : <IconPin />}
@@ -76,11 +60,7 @@ export function Actions({ jot }: Props) {
         color="red"
         className={classes.actionIcon}
         onClick={() => {
-          updateJot.mutate({
-            jotId: jot.jotId,
-            deleted: true,
-            pinned: jot.pinned,
-          });
+          deleteJot();
         }}
       >
         <IconTrash />

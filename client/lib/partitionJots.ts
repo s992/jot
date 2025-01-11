@@ -26,5 +26,16 @@ export function partitionJots<T extends Jot>(jots: T[]) {
     byDate[formattedDate].push(jot);
   }
 
-  return { pinned, byDate };
+  const buckets = [
+    { heading: 'pinned', items: pinned },
+    ...Object.keys(byDate)
+      .sort()
+      .reverse()
+      .map((date) => ({
+        heading: date,
+        items: byDate[date],
+      })),
+  ];
+
+  return buckets;
 }

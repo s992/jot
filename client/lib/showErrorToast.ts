@@ -5,7 +5,7 @@ import { useToastStyle } from './useToastStyle';
 export function useShowErrorToast() {
   const { classes } = useToastStyle();
 
-  return (title: string, message: string) =>
+  return (title: string, message?: string) =>
     notifications.show({
       title,
       message,

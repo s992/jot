@@ -11,6 +11,9 @@ export const useStyles = tss
         visibility: 'visible',
       },
     },
+    activeTableRow: {
+      backgroundColor: 'var(--mantine-color-gray-light)',
+    },
     autoWidthTd: {
       width: '1%',
       whiteSpace: 'nowrap',
