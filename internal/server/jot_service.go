@@ -66,8 +66,9 @@ func (s *jotService) ListJots(ctx context.Context, req *connect.Request[pb.ListJ
 	offset := (req.Msg.Page - 1) * req.Msg.PageSize
 
 	jots, err := s.q.ListJots(ctx, db.ListJotsParams{
-		Limit:  req.Msg.PageSize,
-		Offset: offset,
+		Limit:      req.Msg.PageSize,
+		Offset:     offset,
+		SearchTerm: req.Msg.SearchTerm,
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list jots: %v", err)

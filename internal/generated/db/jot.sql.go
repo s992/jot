@@ -97,18 +97,24 @@ from
   left join tag t on j.tag_id = t.id
 where
   j.deleted = false
+  and (
+    ?1 is null
+    or j.content glob concat ('*', ?1, '*')
+    or t.name glob concat ('*', ?1, '*')
+  )
 order by
   j.pinned desc,
   j.created_at desc
 limit
-  ?2
+  ?3
 offset
-  ?1
+  ?2
 `
 
 type ListJotsParams struct {
-	Offset int64 `json:"offset"`
-	Limit  int64 `json:"limit"`
+	SearchTerm interface{} `json:"searchTerm"`
+	Offset     int64       `json:"offset"`
+	Limit      int64       `json:"limit"`
 }
 
 type ListJotsRow struct {
@@ -122,7 +128,7 @@ type ListJotsRow struct {
 }
 
 func (q *Queries) ListJots(ctx context.Context, arg ListJotsParams) ([]ListJotsRow, error) {
-	rows, err := q.db.QueryContext(ctx, listJots, arg.Offset, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, listJots, arg.SearchTerm, arg.Offset, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

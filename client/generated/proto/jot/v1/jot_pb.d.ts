@@ -124,6 +124,11 @@ export declare type ListJotsRequest = Message<"jot.v1.ListJotsRequest"> & {
    * @generated from field: int64 page_size = 2;
    */
   pageSize: bigint;
+
+  /**
+   * @generated from field: optional string search_term = 3;
+   */
+  searchTerm?: string;
 };
 
 /**

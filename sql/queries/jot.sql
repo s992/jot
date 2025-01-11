@@ -19,6 +19,11 @@ from
   left join tag t on j.tag_id = t.id
 where
   j.deleted = false
+  and (
+    sqlc.arg('searchTerm') is null
+    or j.content glob concat ('*', sqlc.arg('searchTerm'), '*')
+    or t.name glob concat ('*', sqlc.arg('searchTerm'), '*')
+  )
 order by
   j.pinned desc,
   j.created_at desc
