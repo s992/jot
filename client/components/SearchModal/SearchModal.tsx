@@ -71,9 +71,6 @@ export function SearchModal({ canClear, onSearch }: Props) {
           input: classes.input,
         },
       }}
-      classNames={{
-        action: classes.option,
-      }}
     />
   );
 }

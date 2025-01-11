@@ -21,7 +21,7 @@ export function useSuggestTag(inputRef: RefObject<HTMLInputElement | null>) {
   }
 
   const matchedTag = matchingTag ?? suggestedTag;
-  const tagColor = matchedTag ? getTagColor(matchedTag) : colors.blue[6];
+  const tagColor = matchedTag ? getTagColor(matchedTag.name) : colors.blue[6];
   const suggestionText = suggestedTag?.name
     .slice(inputValue.length)
     .padStart(suggestedTag.name.length, ' ');

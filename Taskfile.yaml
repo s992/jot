@@ -40,6 +40,8 @@ tasks:
 
   build-go:
     desc: Builds just the go binary without the client
+    env:
+      CGO_ENABLED: true
     cmds:
       - go build -o ./build/jot -tags production .
 
