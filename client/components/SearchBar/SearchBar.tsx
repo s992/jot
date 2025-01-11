@@ -4,7 +4,6 @@ import { IconSearch, IconX } from '@tabler/icons-react';
 
 import { getTagColor } from '../../lib/getTagColor';
 import { useTags } from '../../lib/listTags';
-import { useStyles } from './styles';
 
 type Props = {
   search: string | undefined;
@@ -12,7 +11,6 @@ type Props = {
 };
 
 export function SearchBar({ search, onSearch }: Props) {
-  const { classes } = useStyles();
   const { data: tags } = useTags();
   const chipColor = search ? getTagColor(search) : undefined;
 
@@ -29,9 +27,6 @@ export function SearchBar({ search, onSearch }: Props) {
           }}
           color={chipColor}
           icon={<IconX size={16} />}
-          classNames={{
-            label: classes.chip,
-          }}
         >
           {search}
         </Chip>
@@ -43,9 +38,6 @@ export function SearchBar({ search, onSearch }: Props) {
               color={getTagColor(tag.name)}
               onClick={() => {
                 onSearch(tag.name);
-              }}
-              classNames={{
-                label: classes.chip,
               }}
             >
               {tag.name}

@@ -3,7 +3,6 @@ import { type CSSObject } from 'tss-react';
 
 export const inputHeight = rem(48);
 export const inputBase: CSSObject = {
-  fontFamily: 'monospace',
   fontSize: rem(16),
   lineHeight: inputHeight,
 };

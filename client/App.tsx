@@ -19,7 +19,9 @@ const finalTransport = createConnectTransport({
 });
 const queryClient = new QueryClient();
 const cache = createCache({ key: 'tss' });
-const theme = createTheme({});
+const theme = createTheme({
+  fontFamily: 'monospace',
+});
 
 export function App() {
   return (

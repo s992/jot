@@ -3,9 +3,6 @@ import { tss } from 'tss-react';
 export const useStyles = tss
   .withNestedSelectors<'actionContainer'>()
   .create(({ classes }) => ({
-    table: {
-      fontFamily: 'monospace',
-    },
     tableRow: {
       [`&:hover .${classes.actionContainer}`]: {
         visibility: 'visible',
@@ -14,10 +11,12 @@ export const useStyles = tss
     activeTableRow: {
       backgroundColor: 'var(--mantine-color-gray-light)',
     },
+    baseline: {
+      verticalAlign: 'baseline',
+    },
     autoWidthTd: {
       width: '1%',
       whiteSpace: 'nowrap',
-      verticalAlign: 'baseline',
     },
     contentContainer: {
       display: 'flex',
@@ -30,9 +29,9 @@ export const useStyles = tss
     },
     actionContainer: {
       display: 'flex',
-      justifyContent: 'space-between',
       alignItems: 'center',
-      gap: 'var(--mantine-spacing-md)',
+      gap: 'var(--mantine-spacing-xs)',
+      paddingTop: 'var(--mantine-spacing-xs)',
       visibility: 'hidden',
     },
     actionIcon: {

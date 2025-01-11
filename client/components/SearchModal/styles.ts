@@ -8,7 +8,4 @@ export const useStyles = tss.create({
     border: 'none',
   },
   inputWrapper,
-  option: {
-    fontFamily: 'monospace',
-  },
 });

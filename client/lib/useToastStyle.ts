@@ -2,7 +2,6 @@ import { type CSSObject, tss } from 'tss-react';
 
 const text: CSSObject = {
   color: 'white',
-  fontFamily: 'monospace',
 };
 
 export const useToastStyle = tss.create({

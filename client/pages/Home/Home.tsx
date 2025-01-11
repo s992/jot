@@ -1,7 +1,7 @@
-import { ActionIcon, Center, Stack } from '@mantine/core';
+import { ActionIcon, Center, Stack, Table } from '@mantine/core';
 import { useHotkeys } from '@mantine/hooks';
 import { IconHelp } from '@tabler/icons-react';
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 
 import { HelpModal } from '../../components/HelpModal/HelpModal';
 import { JotForm } from '../../components/JotForm';
@@ -55,15 +55,25 @@ export function Home() {
             }}
           />
           <SearchBar search={search} onSearch={setSearch} />
-          {buckets.map((bucket, idx) => (
-            <div key={bucket.heading}>
-              <h2 className={classes.sectionHeader}>{bucket.heading}</h2>
-              <JotTable
-                jots={bucket.items}
-                activeIdx={idx === position.bucketIdx ? position.rowIdx : null}
-              />
-            </div>
-          ))}
+          <Table>
+            {buckets.map((bucket, idx) => (
+              <Fragment key={bucket.heading}>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>{bucket.heading}</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody key={bucket.heading}>
+                  <JotTable
+                    jots={bucket.items}
+                    activeIdx={
+                      idx === position.bucketIdx ? position.rowIdx : null
+                    }
+                  />
+                </Table.Tbody>
+              </Fragment>
+            ))}
+          </Table>
         </Stack>
       </Center>
       <SearchModal

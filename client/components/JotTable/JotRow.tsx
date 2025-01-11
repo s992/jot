@@ -31,28 +31,33 @@ export function JotRow({ jot, isActive }: Props) {
   }, [entry?.isIntersecting, isActive, previousIsActive]);
 
   return (
-    <Table.Tr
-      ref={scrollRef}
-      className={cx(classes.tableRow, {
-        [classes.activeTableRow]: isActive,
-      })}
-    >
-      <Table.Td ref={ref} className={classes.autoWidthTd}>
-        {jot.tag && <TagDisplay tag={jot.tag} />}
-      </Table.Td>
-      <Table.Td className={classes.autoWidthTd}>
-        {jot.createdAt
-          ? format(timestampDate(jot.createdAt), 'MM-dd-yyyy hh:mm:ss aa')
-          : '-'}
-      </Table.Td>
-      <Table.Td>
-        <div className={classes.contentContainer}>
-          <span className={classes.content}>{jot.content}</span>
+    <>
+      <Table.Tr
+        ref={scrollRef}
+        className={cx(classes.tableRow, {
+          [classes.activeTableRow]: isActive,
+        })}
+      >
+        <Table.Td
+          ref={ref}
+          className={cx(classes.autoWidthTd, classes.baseline)}
+        >
+          {jot.tag && <TagDisplay tag={jot.tag} />}
           <div className={classes.actionContainer}>
             <Actions jot={jot} />
           </div>
-        </div>
-      </Table.Td>
-    </Table.Tr>
+        </Table.Td>
+        <Table.Td className={cx(classes.autoWidthTd, classes.baseline)}>
+          {jot.createdAt
+            ? format(timestampDate(jot.createdAt), 'MM-dd-yyyy hh:mm:ss aa')
+            : '-'}
+        </Table.Td>
+        <Table.Td className={classes.baseline}>
+          <div className={classes.contentContainer}>
+            <span className={classes.content}>{jot.content}</span>
+          </div>
+        </Table.Td>
+      </Table.Tr>
+    </>
   );
 }

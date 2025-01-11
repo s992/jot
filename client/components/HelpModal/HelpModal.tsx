@@ -1,12 +1,4 @@
-import {
-  Kbd,
-  Modal,
-  Stack,
-  Table,
-  TableTbody,
-  TableTd,
-  TableTr,
-} from '@mantine/core';
+import { Kbd, Modal, Stack, Table } from '@mantine/core';
 import { useOs } from '@mantine/hooks';
 import { ReactNode } from 'react';
 import { Fragment } from 'react/jsx-runtime';
@@ -27,15 +19,15 @@ export function HelpModal({ open, onClose }: Props) {
     <Modal opened={open} onClose={onClose} withCloseButton={false}>
       <Stack>
         <h1 className={classes.heading}>input</h1>
-        <Table className={classes.table}>
-          <TableTbody>
+        <Table>
+          <Table.Tbody>
             <Shortcut keys={[['i'], ['#']]}>focus jot input</Shortcut>
             <Shortcut keys={[[mod, 'k'], [':'], ['/']]}>open search</Shortcut>
-          </TableTbody>
+          </Table.Tbody>
         </Table>
         <h1 className={classes.heading}>navigation</h1>
-        <Table className={classes.table}>
-          <TableTbody>
+        <Table>
+          <Table.Tbody>
             <Shortcut keys={[['?']]}>open this modal</Shortcut>
             <Shortcut keys={[['j'], ['↓']]}>down</Shortcut>
             <Shortcut keys={[['k'], ['↑']]}>up</Shortcut>
@@ -43,17 +35,17 @@ export function HelpModal({ open, onClose }: Props) {
             <Shortcut keys={[['ctrl', 'u']]}>page up</Shortcut>
             <Shortcut keys={[['G'], ['End']]}>bottom</Shortcut>
             <Shortcut keys={[['gg'], ['Home']]}>top</Shortcut>
-          </TableTbody>
+          </Table.Tbody>
         </Table>
         <h1 className={classes.heading}>actions</h1>
-        <Table className={classes.table}>
-          <TableTbody>
+        <Table>
+          <Table.Tbody>
             <Shortcut keys={[['Esc']]}>clear highlight</Shortcut>
             <Shortcut keys={[['p']]}>pin highlighted</Shortcut>
             <Shortcut keys={[['o']]}>open highlighted url</Shortcut>
             <Shortcut keys={[['y']]}>copy highlighted text</Shortcut>
             <Shortcut keys={[['dd']]}>delete highlighted</Shortcut>
-          </TableTbody>
+          </Table.Tbody>
         </Table>
       </Stack>
     </Modal>
@@ -68,17 +60,17 @@ function Shortcut({
   children: ReactNode;
 }) {
   return (
-    <TableTr>
-      <TableTd>
+    <Table.Tr>
+      <Table.Td>
         {keys.map((set, idx) => (
           <Fragment key={`shortcut-${set.join('')}`}>
             <Keyset keys={set} />
             {idx < keys.length - 1 ? ' / ' : null}
           </Fragment>
         ))}
-      </TableTd>
-      <TableTd>{children}</TableTd>
-    </TableTr>
+      </Table.Td>
+      <Table.Td>{children}</Table.Td>
+    </Table.Tr>
   );
 }
 
