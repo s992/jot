@@ -73,6 +73,9 @@ export function Home() {
                     onRowClick={(rowIdx) => {
                       onRowClicked(idx, rowIdx);
                     }}
+                    onTagClick={(tag) => {
+                      setSearch(tag.name);
+                    }}
                   />
                 </Table.Tbody>
               </Fragment>

@@ -4,7 +4,7 @@ import { useIntersection, usePrevious } from '@mantine/hooks';
 import { format } from 'date-fns/format';
 import { useEffect, useRef } from 'react';
 
-import { type Jot } from '../../generated/proto/jot/v1/jot_pb';
+import type { Jot, Tag } from '../../generated/proto/jot/v1/jot_pb';
 import { TagDisplay } from '../TagDisplay';
 import { Actions } from './Actions';
 import { useStyles } from './styles';
@@ -13,9 +13,10 @@ type Props = {
   jot: Jot;
   isActive: boolean;
   onClick: () => void;
+  onTagClick: (tag: Tag) => void;
 };
 
-export function JotRow({ jot, isActive, onClick }: Props) {
+export function JotRow({ jot, isActive, onClick, onTagClick }: Props) {
   const scrollRef = useRef<HTMLTableRowElement>(null);
   const previousIsActive = usePrevious(isActive);
   const { ref, entry } = useIntersection({
@@ -44,7 +45,7 @@ export function JotRow({ jot, isActive, onClick }: Props) {
           ref={ref}
           className={cx(classes.autoWidthTd, classes.baseline)}
         >
-          {jot.tag && <TagDisplay tag={jot.tag} />}
+          {jot.tag && <TagDisplay tag={jot.tag} onClick={onTagClick} />}
           <div
             className={cx(classes.actionContainer, {
               [classes.visibleActionContainer]: isActive,

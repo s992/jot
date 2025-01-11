@@ -9,10 +9,10 @@ type Props = {
   jots: Jot[];
   activeIdx: number | null;
   onRowClick: (rowIdx: number) => void;
-  onTagClick?: (tag: Tag) => void;
+  onTagClick: (tag: Tag) => void;
 };
 
-export function JotTable({ jots, activeIdx, onRowClick }: Props) {
+export function JotTable({ jots, activeIdx, onRowClick, onTagClick }: Props) {
   const { copyContent, deleteJot, openUrl, togglePin } = useActions(
     activeIdx !== null ? jots[activeIdx] : null,
   );
@@ -35,6 +35,7 @@ export function JotTable({ jots, activeIdx, onRowClick }: Props) {
           onClick={() => {
             onRowClick(idx);
           }}
+          onTagClick={onTagClick}
         />
       ))}
     </>
