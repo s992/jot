@@ -25,11 +25,11 @@ export default tseslint.config(
   ),
   {
     ignores: [
-      'dist',
+      'client/dist/*',
       '**/generated',
       'eslint.config.mjs',
       '.lintstagedrc.mjs',
-      'routeTree.gen.ts',
+      'vite.config.mjs',
     ],
   },
   {
