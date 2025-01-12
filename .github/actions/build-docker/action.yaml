@@ -14,8 +14,7 @@ inputs:
     description: 'token to publish'
     require: true
 runs:
-  using: composite
-  shell: bash
+  using: 'composite'
   steps:
     - name: Log in to registry
       uses: docker/login-action@v3

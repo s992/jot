@@ -5,8 +5,7 @@ inputs:
     description: 'token to publish'
     require: true
 runs:
-  using: composite
-  shell: bash
+  using: 'composite'
   steps:
     - name: Set up Go
       uses: actions/setup-go@v5
