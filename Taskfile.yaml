@@ -23,6 +23,22 @@ tasks:
     cmds:
       - npm run dev
 
+  deps:
+    desc: Install dependencies
+    deps:
+      - deps-js
+      - deps-go
+
+  deps-js:
+    desc: Install frontend dependencies
+    cmds:
+      - npm ci
+
+  deps-go:
+    desc: Install backend dependencies
+    cmds:
+      - go mod tidy
+
   build:
     desc: Builds a production executable
     deps:
