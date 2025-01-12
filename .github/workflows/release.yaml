@@ -36,3 +36,5 @@ jobs:
           fetch-depth: 0
       - name: build and push binaries
         uses: ./.github/actions/build-and-push-binaries
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
