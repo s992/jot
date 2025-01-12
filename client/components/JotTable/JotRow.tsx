@@ -5,6 +5,7 @@ import { format } from 'date-fns/format';
 import { useEffect, useRef } from 'react';
 
 import type { Jot, Tag } from '../../generated/proto/jot/v1/jot_pb';
+import { wrapUrls } from '../../lib/urls';
 import { TagDisplay } from '../TagDisplay';
 import { Actions } from './Actions';
 import { useStyles } from './styles';
@@ -61,7 +62,10 @@ export function JotRow({ jot, isActive, onClick, onTagClick }: Props) {
         </Table.Td>
         <Table.Td className={classes.baseline}>
           <div className={classes.contentContainer}>
-            <span className={classes.content}>{jot.content}</span>
+            <span
+              className={classes.content}
+              dangerouslySetInnerHTML={{ __html: wrapUrls(jot.content) }}
+            />
           </div>
         </Table.Td>
       </Table.Tr>

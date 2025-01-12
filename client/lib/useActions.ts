@@ -1,8 +1,8 @@
 import { type Jot } from '../generated/proto/jot/v1/jot_pb';
-import { isUrl } from './isUrl';
 import { useShowErrorToast } from './showErrorToast';
 import { useShowSuccessToast } from './showSuccessToast';
 import { useUpdateJot } from './updateJot';
+import { getUrls } from './urls';
 
 export function useActions(jot: Jot | null) {
   const showSuccessToast = useShowSuccessToast();
@@ -10,11 +10,16 @@ export function useActions(jot: Jot | null) {
   const updateJot = useUpdateJot();
 
   const openUrl = () => {
-    if (!jot || !isUrl(jot.content)) {
+    if (!jot) {
+      return;
+    }
+    const urls = getUrls(jot.content);
+
+    if (!urls?.length) {
       return;
     }
 
-    window.open(jot.content, '_blank');
+    window.open(urls[0], '_blank', 'noreferrer');
   };
 
   const copyContent = () => {
