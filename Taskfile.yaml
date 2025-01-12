@@ -61,6 +61,16 @@ tasks:
     cmds:
       - go build -o ./build/jot -tags production .
 
+  test:
+    desc: Runs all test targets
+    deps:
+      - test-go
+
+  test-go:
+    desc: Runs backend unit tests
+    cmds:
+      - go test -v ./internal/server
+
   gen:
     desc: Runs all codegen targets
     deps:

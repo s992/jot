@@ -4,7 +4,7 @@ select
   t.name
 from
   tag t
-  inner join jot j on j.tag_id = t.id
+  left join jot j on j.tag_id = t.id
 where
   t.name glob concat ('*', sqlc.arg('tagName'), '*')
 group by
