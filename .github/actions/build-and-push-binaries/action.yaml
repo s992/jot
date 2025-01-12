@@ -1,9 +1,5 @@
 name: build-and-push-binaries
 runs-on: ubuntu-latest
-inputs:
-  github_token:
-    description: 'token to publish'
-    require: true
 runs:
   using: 'composite'
   steps:
@@ -25,4 +21,4 @@ runs:
         version: nightly
         args: release --clean
       env:
-        GITHUB_TOKEN: ${{ inputs.github_token }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
