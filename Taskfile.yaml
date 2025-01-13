@@ -65,6 +65,12 @@ tasks:
     desc: Runs all test targets
     deps:
       - test-go
+      - test-js
+
+  test-js:
+    desc: Runs frontend unit tests
+    cmds:
+      - npx vitest run
 
   test-go:
     desc: Runs backend unit tests

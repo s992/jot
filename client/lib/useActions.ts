@@ -27,7 +27,7 @@ export function useActions(jot: Jot | null) {
       return;
     }
 
-    navigator.clipboard
+    return navigator.clipboard
       .writeText(jot.content)
       .then(() => showSuccessToast('copied to clipboard'))
       .catch(() =>
