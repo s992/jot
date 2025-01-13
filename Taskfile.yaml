@@ -1,5 +1,11 @@
 version: '3'
 
+includes:
+  go: .taskfiles/go.yaml
+  js: .taskfiles/js.yaml
+  prettier: .taskfiles/prettier.yaml
+  gen: .taskfiles/gen.yaml
+
 tasks:
   default:
     silent: true
@@ -9,101 +15,54 @@ tasks:
   run:
     desc: Runs backend and frontend in dev mode
     cmds:
-      - npx concurrently "task run-go" "task run-js"
-
-  run-go:
-    desc: Runs backend in dev mode
-    cmds:
-      - go run .
-
-  run-js:
-    desc: Runs frontend in dev mode
-    env:
-      VITE_JOT_PRODUCTION: false
-    cmds:
-      - npm run dev
+      - npx concurrently "task go:run" "task js:run"
 
   deps:
     desc: Install dependencies
     deps:
-      - deps-js
-      - deps-go
-
-  deps-js:
-    desc: Install frontend dependencies
-    cmds:
-      - npm ci
-
-  deps-go:
-    desc: Install backend dependencies
-    cmds:
-      - go mod tidy
+      - js:deps
+      - go:deps
 
   build:
     desc: Builds a production executable
     deps:
-      - build-js
+      - js:build
     cmds:
-      - task build-go
+      - task: go:build
 
-  build-js:
-    desc: Builds client app
-    env:
-      VITE_JOT_PRODUCTION: true
-      NODE_ENV: production
-    cmds:
-      - npm run build
-
-  build-go:
-    desc: Builds just the go binary without the client
-    env:
-      CGO_ENABLED: true
-    cmds:
-      - go build -o ./build/jot -tags production .
+  test:
+    desc: Runs all test targets
+    deps:
+      - go:test
+      - js:test
 
   gen:
     desc: Runs all codegen targets
     deps:
-      - task: gen-sqlc
-      - task: gen-proto
-
-  gen-sqlc:
-    desc: Generates db code
-    deps:
-      - task: fix-prettier-sql
-    cmds:
-      - rm -rf ./internal/generated/db
-      - go run github.com/sqlc-dev/sqlc/cmd/sqlc generate
-
-  gen-proto:
-    desc: Generates proto code
-    cmds:
-      - rm -rf ./internal/generated/proto
-      - rm -rf ./client/generated/proto
-      - npx buf generate
+      - task: gen:sqlc
+      - task: gen:proto
 
   format:
-    desc: Runs all format targets
+    desc: Runs all format writer targets
     deps:
-      - task: format-go
-      - task: format-prettier
+      - task: go:format
+      - task: prettier:format
 
-  format-go:
-    desc: Formats all go code
-    cmds:
-      - go fmt .
+  format-check:
+    desc: Runs all format checker targets
+    deps:
+      - task: go:format
+      - task: prettier:check
 
-  format-prettier:
-    desc: Formats code with prettier
+  lint-check:
+    desc: Runs all lint checker targets
     cmds:
-      - npx prettier --log-level error --write .
-      - task fix-prettier-sql
+      - task: js:lint-check
 
-  fix-prettier-sql:
-    desc: fixes prettier's incompatibility with sqlc
+  ci:
+    desc: Everything we need for ci to pass
     cmds:
-      # prettier's sql formatting breaks sqlc because prettier wants to put spaces between a
-      # word and an open paren, like this: `where (...)`. this is problematic for sqlc named
-      # args because they're formatted as `sqlc.arg(...)`, which results in prettier outputting
-      # `sqlc.arg (...)`. this causes sqlc to blow up because of the space between arg and (
-      - find . -type f -name "*.sql" -exec sed -i'' -E 's/(sqlc\.[[:alnum:]]+) \(/\1(/g' {} \;
+      - task: test
+      - task: format-check
+      - task: lint-check
+      - task: gen:check

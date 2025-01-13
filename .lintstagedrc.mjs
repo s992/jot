@@ -1,4 +1,5 @@
 export default {
-  '*.{js,jsx,ts,tsx}': ['npm run lint:fix'],
-  '*': ['task format --'],
+  '*.{js,jsx,ts,tsx}': ['task prettier:fix --', 'task js:lint-fix --'],
+  '*.go': ['task go:format --'],
+  '*.{html,json,md,yaml,sql}': ['task prettier:fix --'],
 };

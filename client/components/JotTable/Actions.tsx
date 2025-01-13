@@ -25,7 +25,8 @@ export function Actions({ jot }: Props) {
         size="sm"
         className={classes.actionIcon}
         onClick={() => {
-          copyContent();
+          // error handling happens in the hook
+          void copyContent();
         }}
       >
         <IconCopy />

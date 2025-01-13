@@ -14,15 +14,15 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type jotService struct {
+type JotService struct {
 	q *db.Queries
 }
 
-func NewJotService(q *db.Queries) *jotService {
-	return &jotService{q: q}
+func NewJotService(q *db.Queries) *JotService {
+	return &JotService{q: q}
 }
 
-func (s *jotService) CreateJot(ctx context.Context, req *connect.Request[pb.CreateJotRequest]) (*connect.Response[pb.Jot], error) {
+func (s *JotService) CreateJot(ctx context.Context, req *connect.Request[pb.CreateJotRequest]) (*connect.Response[pb.Jot], error) {
 	tag, err := s.q.GetTagByName(ctx, req.Msg.TagName)
 	if err == sql.ErrNoRows {
 		tag, err = s.q.CreateTag(ctx, req.Msg.TagName)
@@ -55,7 +55,7 @@ func (s *jotService) CreateJot(ctx context.Context, req *connect.Request[pb.Crea
 	}), nil
 }
 
-func (s *jotService) ListJots(ctx context.Context, req *connect.Request[pb.ListJotsRequest]) (*connect.Response[pb.ListJotsResponse], error) {
+func (s *JotService) ListJots(ctx context.Context, req *connect.Request[pb.ListJotsRequest]) (*connect.Response[pb.ListJotsResponse], error) {
 	if req.Msg.Page < 1 {
 		req.Msg.Page = 1
 	}
@@ -95,7 +95,7 @@ func (s *jotService) ListJots(ctx context.Context, req *connect.Request[pb.ListJ
 	}), nil
 }
 
-func (s *jotService) UpdateJot(ctx context.Context, req *connect.Request[pb.UpdateJotRequest]) (*connect.Response[pb.Jot], error) {
+func (s *JotService) UpdateJot(ctx context.Context, req *connect.Request[pb.UpdateJotRequest]) (*connect.Response[pb.Jot], error) {
 	jot, err := s.validateAndGetJot(ctx, req.Msg.JotId)
 	if err != nil {
 		return nil, err
@@ -133,7 +133,7 @@ func (s *jotService) UpdateJot(ctx context.Context, req *connect.Request[pb.Upda
 		}}), nil
 }
 
-func (s *jotService) validateAndGetJot(ctx context.Context, id int64) (db.GetJotByIdRow, error) {
+func (s *JotService) validateAndGetJot(ctx context.Context, id int64) (db.GetJotByIdRow, error) {
 	jot, err := s.q.GetJotById(ctx, id)
 	if err == sql.ErrNoRows {
 		return db.GetJotByIdRow{}, connect.NewError(connect.CodeNotFound, fmt.Errorf("jot not found"))
@@ -144,7 +144,7 @@ func (s *jotService) validateAndGetJot(ctx context.Context, id int64) (db.GetJot
 	return jot, nil
 }
 
-func (s *jotService) validateNotDeleted(jot db.GetJotByIdRow) error {
+func (s *JotService) validateNotDeleted(jot db.GetJotByIdRow) error {
 	if jot.Deleted {
 		return connect.NewError(connect.CodeFailedPrecondition, fmt.Errorf("cannot modify deleted jot"))
 	}
