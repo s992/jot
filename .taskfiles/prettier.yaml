@@ -1,0 +1,21 @@
+version: '3'
+
+tasks:
+  check:
+    desc: Verifies all prettier-able files are formatted
+    cmds:
+      - npx prettier --check {{.CLI_ARGS | default "."}}
+
+  fix:
+    desc: Attempts to format with prettier
+    cmds:
+      - npx prettier --write {{.CLI_ARGS | default "."}}
+
+  fix-sql:
+    desc: fixes prettier's incompatibility with sqlc
+    cmds:
+      # prettier's sql formatting breaks sqlc because prettier wants to put spaces between a
+      # word and an open paren, like this: `where (...)`. this is problematic for sqlc named
+      # args because they're formatted as `sqlc.arg(...)`, which results in prettier outputting
+      # `sqlc.arg (...)`. this causes sqlc to blow up because of the space between arg and (
+      - find . -type f -name "*.sql" -exec sed -i'' -E 's/(sqlc\.[[:alnum:]]+) \(/\1(/g' {} \;

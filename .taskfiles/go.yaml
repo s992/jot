@@ -1,0 +1,39 @@
+version: '3'
+
+tasks:
+  deps:
+    desc: Install go dependencies
+    cmds:
+      - go mod tidy
+
+  build:
+    desc: Builds just the go binary without building the client
+    env:
+      CGO_ENABLED: true
+    cmds:
+      - go build -o ./build/jot -tags production .
+
+  test:
+    desc: Runs go unit tests
+    cmds:
+      - go test -v ./internal/server
+
+  format:
+    desc: Formats all go code
+    cmds:
+      - gofmt -w {{.CLI_ARGS | default "."}}
+
+  format-check:
+    desc: Ensures go code has been formatted
+    cmds:
+      - |
+        output=$(gofmt -l {{.CLI_ARGS | default "."}})
+        if [ -n "$output" ]; then
+          echo "$output"
+          exit 1
+        fi
+
+  run:
+    desc: Runs backend in dev mode
+    cmds:
+      - go run .

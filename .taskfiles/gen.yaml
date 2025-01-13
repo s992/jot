@@ -1,0 +1,34 @@
+version: '3'
+
+includes:
+  prettier: ./prettier.yaml
+
+tasks:
+  sqlc:
+    # this task is a bit of a hack. prettier's sql formatting
+    # breaks sqlc (see prettier:fix-sql for details), so we
+    # need to run the fix before generating, then we run prettier
+    # again to put it back in a broken state that will pass
+    # the format check
+    desc: Generates db code
+    deps:
+      - task: prettier:fix-sql
+    cmds:
+      - rm -rf ./internal/generated/db
+      - go run github.com/sqlc-dev/sqlc/cmd/sqlc generate
+      - task prettier:fix -- ./sql
+
+  proto:
+    desc: Generates proto code
+    cmds:
+      - rm -rf ./internal/generated/proto
+      - rm -rf ./client/generated/proto
+      - npx buf generate
+
+  check:
+    desc: Runs codegen and ensures working dir is not dirty
+    deps:
+      - task: sqlc
+      - task: proto
+    cmds:
+      - test -z "$(git status --porcelain)"

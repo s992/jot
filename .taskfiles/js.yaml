@@ -1,0 +1,38 @@
+version: '3'
+
+tasks:
+  deps:
+    desc: Install js dependencies
+    cmds:
+      - npm ci
+
+  build:
+    desc: Builds js production bundle
+    env:
+      VITE_JOT_PRODUCTION: true
+      NODE_ENV: production
+    cmds:
+      - npx tsc -b && npx vite build
+
+  test:
+    desc: Runs js unit tests
+    cmds:
+      - npx vitest run
+
+  run:
+    desc: Runs frontend in dev mode
+    env:
+      VITE_JOT_PRODUCTION: false
+    cmds:
+      - npx vite
+
+  lint-check:
+    desc: Verifies js passes linter
+    cmds:
+      - npx eslint --report-unused-disable-directives --max-warnings 0 --no-warn-ignored
+      - npx tsc --noEmit
+
+  lint-fix:
+    desc: Attempts to fix fixable lint issues
+    cmds:
+      - npx eslint --report-unused-disable-directives --max-warnings 0 --no-warn-ignored --fix {{.CLI_ARGS | default "."}}

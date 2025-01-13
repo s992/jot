@@ -6,7 +6,7 @@ from
   tag t
   left join jot j on j.tag_id = t.id
 where
-  t.name glob concat ('*', sqlc.arg('tagName'), '*')
+  t.name glob concat ('*', sqlc.arg ('tagName'), '*')
 group by
   t.id
 order by
@@ -22,7 +22,7 @@ select
 from
   tag
 where
-  name = sqlc.arg('name')
+  name = sqlc.arg ('name')
 limit
   1
 ;
@@ -31,5 +31,5 @@ limit
 insert into
   tag (name)
 values
-  (sqlc.arg('name')) returning *
+  (sqlc.arg ('name')) returning *
 ;

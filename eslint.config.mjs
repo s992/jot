@@ -30,6 +30,8 @@ export default tseslint.config(
       'eslint.config.mjs',
       '.lintstagedrc.mjs',
       'vite.config.mjs',
+      'vitest.config.mjs',
+      'vitest.global-setup.mjs',
     ],
   },
   {

@@ -2,7 +2,7 @@
 insert into
   jot (content, tag_id)
 values
-  (sqlc.arg('content'), sqlc.arg('tag_id')) returning *
+  (sqlc.arg ('content'), sqlc.arg ('tag_id')) returning *
 ;
 
 -- name: ListJots :many
@@ -13,34 +13,34 @@ select
   j.content,
   j.pinned,
   j.deleted,
-  sqlc.embed(t)
+  sqlc.embed (t)
 from
   jot j
   left join tag t on j.tag_id = t.id
 where
   j.deleted = false
   and (
-    sqlc.arg('searchTerm') is null
-    or j.content glob concat ('*', sqlc.arg('searchTerm'), '*')
-    or t.name glob concat ('*', sqlc.arg('searchTerm'), '*')
+    sqlc.arg ('searchTerm') is null
+    or j.content glob concat ('*', sqlc.arg ('searchTerm'), '*')
+    or t.name glob concat ('*', sqlc.arg ('searchTerm'), '*')
   )
 order by
   j.pinned desc,
   j.created_at desc
 limit
-  sqlc.arg('limit')
+  sqlc.arg ('limit')
 offset
-  sqlc.arg('offset')
+  sqlc.arg ('offset')
 ;
 
 -- name: UpdateJot :one
 update jot
 set
-  pinned = sqlc.arg('pinned'),
-  deleted = sqlc.arg('deleted'),
+  pinned = sqlc.arg ('pinned'),
+  deleted = sqlc.arg ('deleted'),
   updated_at = current_timestamp
 where
-  id = sqlc.arg('id') returning *
+  id = sqlc.arg ('id') returning *
 ;
 
 -- name: GetJotById :one
@@ -51,10 +51,10 @@ select
   j.content,
   j.pinned,
   j.deleted,
-  sqlc.embed(t)
+  sqlc.embed (t)
 from
   jot j
   inner join tag t on j.tag_id = t.id
 where
-  j.id = sqlc.arg('id')
+  j.id = sqlc.arg ('id')
 ;
