@@ -28,7 +28,7 @@ tasks:
     deps:
       - js:build
     cmds:
-      - task go:build
+      - task: go:build
 
   test:
     desc: Runs all test targets
@@ -56,12 +56,12 @@ tasks:
 
   lint-check:
     desc: Runs all lint checker targets
-    deps:
+    cmds:
       - task: js:lint-check
 
   ci:
     desc: Everything we need for ci to pass
-    deps:
+    cmds:
       - task: test
       - task: format-check
       - task: lint-check
