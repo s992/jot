@@ -16,6 +16,11 @@ export function useKeyboardNavigation<T>(buckets: Bucket<T>[]) {
   };
 
   const onRowClicked = (bucketIdx: number, rowIdx: number) => {
+    if (bucketIdx === position.bucketIdx && rowIdx === position.rowIdx) {
+      resetPosition();
+      return;
+    }
+
     setPosition({ bucketIdx, rowIdx });
   };
 
