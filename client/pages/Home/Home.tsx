@@ -1,5 +1,5 @@
 import { ActionIcon, Center, Stack, Table } from '@mantine/core';
-import { useHotkeys } from '@mantine/hooks';
+import { useClickOutside, useHotkeys } from '@mantine/hooks';
 import { IconHelp } from '@tabler/icons-react';
 import { Fragment, useMemo, useState } from 'react';
 
@@ -29,6 +29,7 @@ export function Home() {
   const showErrorToast = useShowErrorToast();
   const { position, resetPosition, onRowClicked } =
     useKeyboardNavigation(buckets);
+  const clickOutsideRef = useClickOutside(resetPosition);
 
   useHotkeys([
     [
@@ -42,7 +43,7 @@ export function Home() {
   return (
     <>
       <Center>
-        <Stack className={classes.container}>
+        <Stack ref={clickOutsideRef} className={classes.container}>
           <JotForm
             onCreate={async (tagName, content) => {
               try {
