@@ -1,13 +1,14 @@
 import { tss } from 'tss-react';
 
 export const useStyles = tss
-  .withNestedSelectors<'actionContainer'>()
+  .withNestedSelectors<'visibleOnHover'>()
   .create(({ classes }) => ({
     tableRow: {
-      [`&:hover .${classes.actionContainer}`]: {
+      [`&:hover .${classes.visibleOnHover}`]: {
         visibility: 'visible',
       },
     },
+    visibleOnHover: {},
     activeTableRow: {
       backgroundColor: 'var(--mantine-color-gray-light)',
     },
@@ -34,13 +35,21 @@ export const useStyles = tss
       paddingTop: 'var(--mantine-spacing-xs)',
       visibility: 'hidden',
     },
-    visibleActionContainer: {
+    visible: {
       visibility: 'visible',
+    },
+    timestamp: {
+      visibility: 'hidden',
+      color: 'var(--mantine-color-gray-5)',
     },
     actionIcon: {
       opacity: 0.3,
       '&:hover': {
         opacity: 1,
       },
+    },
+    tagCell: {
+      display: 'flex',
+      flexDirection: 'column',
     },
   }));

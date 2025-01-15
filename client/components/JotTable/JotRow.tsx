@@ -46,19 +46,24 @@ export function JotRow({ jot, isActive, onClick, onTagClick }: Props) {
           ref={ref}
           className={cx(classes.autoWidthTd, classes.baseline)}
         >
-          {jot.tag && <TagDisplay tag={jot.tag} onClick={onTagClick} />}
-          <div
-            className={cx(classes.actionContainer, {
-              [classes.visibleActionContainer]: isActive,
-            })}
-          >
-            <Actions jot={jot} />
+          <div className={classes.tagCell}>
+            {jot.tag && <TagDisplay tag={jot.tag} onClick={onTagClick} />}
+            <span
+              className={cx(classes.timestamp, classes.visibleOnHover, {
+                [classes.visible]: isActive,
+              })}
+            >
+              {jot.createdAt &&
+                format(timestampDate(jot.createdAt), 'MM-dd-yyyy hh:mm aa')}
+            </span>
+            <div
+              className={cx(classes.actionContainer, classes.visibleOnHover, {
+                [classes.visible]: isActive,
+              })}
+            >
+              <Actions jot={jot} />
+            </div>
           </div>
-        </Table.Td>
-        <Table.Td className={cx(classes.autoWidthTd, classes.baseline)}>
-          {jot.createdAt
-            ? format(timestampDate(jot.createdAt), 'MM-dd-yyyy hh:mm:ss aa')
-            : '-'}
         </Table.Td>
         <Table.Td className={classes.baseline}>
           <div className={classes.contentContainer}>
