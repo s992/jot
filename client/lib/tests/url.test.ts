@@ -56,5 +56,12 @@ describe('URL utilities', () => {
       expect(result?.[0]).toMatch(/^http:/);
       expect(result?.[1]).toMatch(/^https:/);
     });
+
+    it('should match urls with dashes', () => {
+      const input =
+        'this is my url: https://i-have-a-dash.dash-url.com pretty neat';
+      const result = getUrls(input);
+      expect(result).toEqual(['https://i-have-a-dash.dash-url.com']);
+    });
   });
 });
