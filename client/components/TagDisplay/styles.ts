@@ -10,6 +10,7 @@ export function useStyles(tag: Tag, isClickable: boolean) {
     link: {
       color,
       cursor: isClickable ? 'pointer' : 'text',
+      width: 'fit-content',
     },
   })();
 }
